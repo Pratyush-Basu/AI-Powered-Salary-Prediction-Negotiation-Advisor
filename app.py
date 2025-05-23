@@ -8,7 +8,7 @@ import logging
 import random
 
 # Configure Gemini
-genai.configure(api_key="AIzaSyDYdY7duDsDqsqzt-dsgj1VhRtzvrfWqCM")  # Replace with your actual key
+genai.configure(api_key="YOUR API KEY")  # Replace with your actual key
 genai_model = genai.GenerativeModel("gemini-1.5-flash")
 
 # Industry salary data (to be used for realistic comparisons)
