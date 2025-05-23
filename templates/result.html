@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salary Prediction Results</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --success-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+    }
+    
+    body {
+      background-color: #f5f7ff;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .main-container {
+      max-width: 1000px;
+      margin: 40px auto;
+    }
+    
+    .card-custom {
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border: none;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    
+    .salary-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.2);
+    }
+    
+    .salary-value {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .salary-badge {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    
+    .section-title {
+      color: var(--primary-color);
+      border-bottom: 2px solid rgba(67, 97, 238, 0.1);
+      padding-bottom: 12px;
+      margin-top: 35px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+    
+    .section-title i {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 10px;
+    }
+    
+    .tip-card {
+      border-radius: 12px;
+      border-left: 5px solid var(--primary-color);
+      background-color: #f8faff;
+      padding: 18px;
+      margin-bottom: 18px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+    }
+    
+    .tip-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .tip-card .tip-icon {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.3rem;
+      margin-right: 15px;
+      padding-top: 2px;
+    }
+    
+    .resume-tip-card {
+      border-left: 5px solid var(--success-color);
+    }
+    
+    .resume-tip-card .tip-icon {
+      background: linear-gradient(135deg, #38b000, var(--success-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin: 0 auto 20px;
+      max-width: 700px;
+      padding: 10px;
+    }
+    
+    .salary-range {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      padding: 0 15px;
+      color: #555;
+      font-weight: 500;
+    }
+    
+    .salary-range-item {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .salary-range-value {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    
+    .salary-range-label {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 5px;
+    }
+    
+    .btn-action {
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border: none;
+      box-shadow: 0 4px 15px rgba(67, 97, 238, 0.25);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.35);
+    }
+    
+    .btn-outline-secondary {
+      border: 2px solid #e0e6ff;
+      color: #495057;
+    }
+    
+    .btn-outline-secondary:hover {
+      background-color: #f8f9ff;
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .voice-controls {
+      background-color: #f8faff;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+    }
+    
+    .voice-controls .btn {
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .voice-progress {
+      height: 8px;
+      border-radius: 4px;
+      background-color: #e9ecef;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+    
+    .voice-progress-bar {
+      height: 100%;
+      background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+      width: 0;
+      transition: width 0.3s linear;
+    }
+    
+    /* Summary cards */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.25s ease;
+    }
+    
+    .summary-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .summary-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 10px 0;
+    }
+    
+    .summary-label {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .summary-icon {
+      font-size: 1.8rem;
+      margin-bottom: 5px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Actions toolbar */
+    .actions-toolbar {
+      position: sticky;
+      bottom: 20px;
+      margin-top: 30px;
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    /* New recommendation section */
+    .recommendation {
+      background: linear-gradient(135deg, #f0f7ff, #e6f2ff);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 30px 0;
+      border-left: 5px solid #3b82f6;
+      position: relative;
+    }
+    
+    .recommendation-icon {
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3b82f6;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+    }
+    
+    .recommendation-title {
+      color: #1e40af;
+      font-weight: 600;
+      margin-bottom: 10px;
+      padding-left: 25px;
+    }
+    
+    .recommendation-text {
+      color: #1e3a8a;
+      padding-left: 25px;
+    }
+    
+    @media print {
+      .no-print {
+        display: none;
+      }
+      .card-custom {
+        box-shadow: none;
+      }
+      body {
+        background-color: white;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .salary-range {
+        flex-wrap: wrap;
+      }
+      .salary-range-item {
+        flex: 0 0 50%;
+        margin-bottom: 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+      .actions-toolbar {
+        flex-direction: column;
+      }
+      .actions-toolbar .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container main-container">
+    <div class="card p-4 p-md-5 card-custom">
+      <div class="salary-header">
+        <h2 class="mb-3"><i class="fas fa-chart-line me-2"></i> Your Estimated Salary</h2>
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="salary-value">₹{{ "{:,.2f}".format(salary) }}</div>
+          <div class="ms-3 text-start">
+            {% if salary > industry_avg %}
+              <div class="badge salary-badge px-3 py-2">
+                <i class="fas fa-arrow-up me-1"></i> +{{ '{:.1f}'.format((salary/industry_avg - 1) * 100) }}% above average
+              </div>
+            {% else %}
+              <div class="badge salary-badge px-3 py-2">
+                <i class="fas fa-arrow-down me-1"></i> {{ '{:.1f}'.format((1 - salary/industry_avg) * 100) }}% below average
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- New Summary Cards Section -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <i class="fas fa-hand-holding-usd summary-icon"></i>
+          <div class="summary-value">₹{{ "{:,.2f}".format(industry_min) }}</div>
+          <div class="summary-label">Industry Minimum</div>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-chart-bar summary-icon"></i>
+          <div class="summary-value">₹{{ "{:,.2f}".format(industry_avg) }}</div>
+          <div class="summary-label">Industry Average</div>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-user-graduate summary-icon"></i>
+          <div class="summary-value">₹{{ "{:,.2f}".format(salary) }}</div>
+          <div class="summary-label">Your Estimate</div>
+        </div>
+        <div class="summary-card">
+          <i class="fas fa-star summary-icon"></i>
+          <div class="summary-value">₹{{ "{:,.2f}".format(industry_max) }}</div>
+          <div class="summary-label">Industry Maximum</div>
+        </div>
+      </div>
+      
+      <div class="section-title">
+        <i class="fas fa-chart-bar fs-4"></i>
+        <h4 class="mb-0">Industry Comparison</h4>
+      </div>
+      
+      <div class="chart-container">
+        <canvas id="salaryChart"></canvas>
+      </div>
+      
+      <div class="salary-range">
+        <div class="salary-range-item">
+          <div class="salary-range-value">₹{{ "{:,.2f}".format(industry_min) }}</div>
+          <div class="salary-range-label">Minimum</div>
+        </div>
+        <div class="salary-range-item">
+          <div class="salary-range-value">₹{{ "{:,.2f}".format(industry_low) }}</div>
+          <div class="salary-range-label">Low Range</div>
+        </div>
+        <div class="salary-range-item">
+          <div class="salary-range-value">₹{{ "{:,.2f}".format(industry_avg) }}</div>
+          <div class="salary-range-label">Average</div>
+        </div>
+        <div class="salary-range-item">
+          <div class="salary-range-value">₹{{ "{:,.2f}".format(industry_high) }}</div>
+          <div class="salary-range-label">High Range</div>
+        </div>
+        <div class="salary-range-item">
+          <div class="salary-range-value">₹{{ "{:,.2f}".format(industry_max) }}</div>
+          <div class="salary-range-label">Maximum</div>
+        </div>
+      </div>
+      
+      <!-- New Recommendation Section -->
+      <div class="recommendation">
+        <div class="recommendation-icon">
+          <i class="fas fa-bullseye"></i>
+        </div>
+        <h5 class="recommendation-title">Salary Target Recommendation</h5>
+        <p class="recommendation-text">
+          Based on your profile and market data, we recommend targeting 
+          <strong>₹{{ "{:,.2f}".format(salary * 1.1) }}</strong> 
+          in your negotiations, which is approximately 10% above your current estimate.
+          This target is ambitious yet achievable given your qualifications.
+        </p>
+      </div>
+      
+      <div class="section-title">
+        <i class="fas fa-lightbulb fs-4"></i>
+        <h4 class="mb-0">AI-Powered Negotiation Tips</h4>
+      </div>
+      
+      <div id="tipList">
+        {% for tip in tips %}
+          <div class="tip-card">
+            <div class="d-flex">
+              <div class="tip-icon">
+                <i class="fas fa-comment-dollar"></i>
+              </div>
+              <div>{{ tip }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      
+      {% if resume_tips and resume_tips[0] != "No valid PDF resume uploaded." %}
+        <div class="section-title">
+          <i class="fas fa-file-alt fs-4"></i>
+          <h4 class="mb-0">Resume-Based Negotiation Points</h4>
+        </div>
+  
+        <div>
+          {% for tip in resume_tips %}
+            <div class="tip-card resume-tip-card">
+              <div class="d-flex">
+                <div class="tip-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div>{{ tip }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      <div class="section-title no-print">
+        <i class="fas fa-volume-up fs-4"></i>
+        <h4 class="mb-0">Hear Your Results</h4>
+      </div>
+      
+      <div class="no-print">
+        <div class="voice-controls">
+          <button id="playButton" class="btn btn-primary" onclick="speakResults()">
+            <i class="fas fa-play"></i>
+          </button>
+          <button id="pauseButton" class="btn btn-outline-secondary" onclick="pauseSpeech()" disabled>
+            <i class="fas fa-pause"></i>
+          </button>
+          <button id="stopButton" class="btn btn-outline-secondary" onclick="stopSpeech()" disabled>
+            <i class="fas fa-stop"></i>
+          </button>
+          <div class="ms-3">
+            <span id="voiceStatus">Ready to read your results</span>
+          </div>
+        </div>
+        
+        <div class="voice-progress">
+          <div id="voiceProgressBar" class="voice-progress-bar"></div>
+        </div>
+      </div>
+      
+      <div class="actions-toolbar no-print">
+        <a href="/" class="btn btn-primary btn-action">
+          <i class="fas fa-redo me-2"></i> Try Another Prediction
+        </a>
+        <button onclick="window.print()" class="btn btn-outline-secondary btn-action">
+          <i class="fas fa-file-pdf me-2"></i> Save as PDF
+        </button>
+        <button onclick="shareResults()" class="btn btn-outline-secondary btn-action">
+          <i class="fas fa-share-alt me-2"></i> Share Results
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Chart configuration
+    const ctx = document.getElementById('salaryChart');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Industry Min', 'Industry Low', 'Industry Average', 'Your Prediction', 'Industry High', 'Industry Max'],
+        datasets: [{
+          label: 'Salary (in ₹)',
+          data: [
+            {{ industry_min }},
+            {{ industry_low }}, 
+            {{ industry_avg }}, 
+            {{ salary }},
+            {{ industry_high }},
+            {{ industry_max }}
+          ],
+          backgroundColor: [
+            'rgba(148, 164, 196, 0.6)',
+            'rgba(108, 117, 155, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(67, 97, 238, 0.8)',
+            'rgba(70, 149, 239, 0.6)',
+            'rgba(76, 201, 240, 0.6)'
+          ],
+          borderColor: [
+            'rgba(148, 164, 196, 1)',
+            'rgba(108, 117, 155, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(67, 97, 238, 1)',
+            'rgba(70, 149, 239, 1)',
+            'rgba(76, 201, 240, 1)'
+          ],
+          borderWidth: 1,
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: {
+              display: true,
+              drawBorder: false,
+              color: 'rgba(200, 200, 200, 0.2)'
+            },
+            ticks: {
+              callback: function(value) {
+                return '₹' + value.toLocaleString();
+              }
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return '₹' + context.raw.toLocaleString();
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Speech synthesis variables
+    let speechSynthesis = window.speechSynthesis;
+    let utterance;
+    let progressInterval;
+    let speechDuration = 0;
+    let startTime;
+    
+    function speakResults() {
+      // Reset any existing speech
+      stopSpeech();
+      
+      // Get content to speak
+      const salary = "Your estimated salary is ₹{{ salary }}";
+      
+      const tips = Array.from(document.querySelectorAll("#tipList .tip-card"))
+                      .map(div => div.textContent.trim())
+                      .join(". ");
+                      
+      const resumeTips = document.querySelectorAll(".resume-tip-card").length > 0 ? 
+        "Based on your resume: " + Array.from(document.querySelectorAll(".resume-tip-card"))
+          .map(div => div.textContent.trim())
+          .join(". ") : "";
+      
+      // Create utterance
+      utterance = new SpeechSynthesisUtterance();
+      utterance.text = `${salary}. Here are some negotiation tips: ${tips}. ${resumeTips}`;
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      
+      // Set up events
+      utterance.onstart = function() {
+        startTime = new Date().getTime();
+        document.getElementById('playButton').disabled = true;
+        document.getElementById('pauseButton').disabled = false;
+        document.getElementById('stopButton').disabled = false;
+        document.getElementById('voiceStatus').textContent = "Reading results...";
+        
+        // Estimate duration (rough approximation)
+        speechDuration = utterance.text.split(' ').length * 300; // 300ms per word
+        
+        // Update progress bar
+        progressInterval = setInterval(updateSpeechProgress, 100);
+      };
+      
+      utterance.onend = function() {
+        resetSpeechControls();
+      };
+      
+      utterance.onerror = function() {
+        resetSpeechControls();
+        document.getElementById('voiceStatus').textContent = "Error occurred while speaking";
+      };
+      
+      // Start speaking
+      speechSynthesis.speak(utterance);
+    }
+    
+    function pauseSpeech() {
+      if (speechSynthesis.speaking) {
+        if (speechSynthesis.paused) {
+          speechSynthesis.resume();
+          document.getElementById('pauseButton').innerHTML = '<i class="fas fa-pause"></i>';
+          document.getElementById('voiceStatus').textContent = "Reading results...";
+        } else {
+          speechSynthesis.pause();
+          document.getElementById('pauseButton').innerHTML = '<i class="fas fa-play"></i>';
+          document.getElementById('voiceStatus').textContent = "Paused";
+        }
+      }
+    }
+    
+    function stopSpeech() {
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+      }
+      resetSpeechControls();
+      
+      // Notify the server
+      fetch('/stop_speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    function resetSpeechControls() {
+      clearInterval(progressInterval);
+      document.getElementById('playButton').disabled = false;
+      document.getElementById('pauseButton').disabled = true;
+      document.getElementById('stopButton').disabled = true;
+      document.getElementById('voiceStatus').textContent = "Ready to read your results";
+      document.getElementById('voiceProgressBar').style.width = '0%';
+    }
+    
+    function updateSpeechProgress() {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        const elapsedTime = new Date().getTime() - startTime;
+        const progress = Math.min((elapsedTime / speechDuration) * 100, 100);
+        document.getElementById('voiceProgressBar').style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+          clearInterval(progressInterval);
+        }
+      }
+    }
+    
+    function shareResults() {
+      // Prepare share data
+      const shareData = {
+        title: 'My Predicted Salary',
+        text: `My estimated salary is ₹{{ "{:,.2f}".format(salary) }}, which is {{ '{:.1f}'.format((salary/industry_avg - 1) * 100) }}% compared to the industry average.`,
+        url: window.location.href
+      };
+      
+      // Check if Web Share API is available
+      if (navigator.share) {
+        navigator.share(shareData)
+          .then(() => console.log('Shared successfully'))
+          .catch((error) => console.log('Error sharing:', error));
+      } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(shareData.text)
+          .then(() => {
+            alert('Results copied to clipboard!');
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+          });
+      }
+    }
+    
+    // Clean up when leaving page
+    window.addEventListener('beforeunload', function() {
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+      }
+    });
+  </script>
+</body>
+</html>

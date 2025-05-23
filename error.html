@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Error - Salary Predictor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #f0f5ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .error-card {
+      max-width: 600px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: none;
+      overflow: hidden;
+      background: linear-gradient(to bottom right, #ffffff, #f9fbff);
+    }
+    .error-header {
+      background: linear-gradient(135deg, #fd5e5e, #c03a3a);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card error-card">
+      <div class="error-header">
+        <h2 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Something went wrong</h2>
+      </div>
+      <div class="card-body p-4">
+        <p class="mb-4">We encountered an error while processing your request:</p>
+        <div class="alert alert-danger">
+          {{ error }}
+        </div>
+        
+        <p class="mt-4">Here are some things you can try:</p>
+        <ul>
+          <li>Go back and check your input values</li>
+          <li>Try uploading a different resume file (if applicable)</li>
+          <li>Refresh the page and try again</li>
+        </ul>
+        
+        <div class="d-grid gap-2 mt-4">
+          <a href="/" class="btn btn-primary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
